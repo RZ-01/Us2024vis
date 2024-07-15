@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USA Map with ECharts</title>
+    <style>
+        #main {
+            width: 100%;
+            height: 100vh; /* 视口高度 */
+        }
+    </style>
+</head>
+<body>
+    <div id="main"></div>
+
+    <!-- 引用必要的JS文件 -->
+    <script src="js/echarts.js"></script>
+    <script src="js/d3-array.js"></script>
+    <script src="js/d3-geo.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var chartDom = document.getElementById('main');
+            var myChart = echarts.init(chartDom);
+            myChart.showLoading();
+
+            $.when(
+                $.get('data/USA.json')
+            ).done(function (usaJson) {
+                const projection = d3.geoAlbersUsa();
+                myChart.hideLoading();
+                echarts.registerMap('USA', usaJson);
+
+                // 定义各州的缩写
+                const stateAbbreviations = {
+                    'Alabama': 'AL',
+                    'Alaska': 'AK',
+                    'Arizona': 'AZ',
+                    'Arkansas': 'AR',
+                    'California': 'CA',
+                    'Colorado': 'CO',
+                    'Connecticut': 'CT',
+                    'Delaware': 'DE',
+                    'District of Columbia': 'DC',
+                    'Florida': 'FL',
+                    'Georgia': 'GA',
+                    'Hawaii': 'HI',
+                    'Idaho': 'ID',
+                    'Illinois': 'IL',
+                    'Indiana': 'IN',
+                    'Iowa': 'IA',
+                    'Kansas': 'KS',
+                    'Kentucky': 'KY',
+                    'Louisiana': 'LA',
+                    'Maine': 'ME',
+                    'Maryland': 'MD',
+                    'Massachusetts': 'MA',
+                    'Michigan': 'MI',
+                    'Minnesota': 'MN',
+                    'Mississippi': 'MS',
+                    'Missouri': 'MO',
+                    'Montana': 'MT',
+                    'Nebraska': 'NE',
+                    'Nevada': 'NV',
+                    'New Hampshire': 'NH',
+                    'New Jersey': 'NJ',
+                    'New Mexico': 'NM',
+                    'New York': 'NY',
+                    'North Carolina': 'NC',
+                    'North Dakota': 'ND',
+                    'Ohio': 'OH',
+                    'Oklahoma': 'OK',
+                    'Oregon': 'OR',
+                    'Pennsylvania': 'PA',
+                    'Rhode Island': 'RI',
+                    'South Carolina': 'SC',
+                    'South Dakota': 'SD',
+                    'Tennessee': 'TN',
+                    'Texas': 'TX',
+                    'Utah': 'UT',
+                    'Vermont': 'VT',
+                    'Virginia': 'VA',
+                    'Washington': 'WA',
+                    'West Virginia': 'WV',
+                    'Wisconsin': 'WI',
+                    'Wyoming': 'WY'
+                };
+
+                var option = {
+                    title: {
+                        text: 'USA Map with ECharts',
+                        subtext: 'Data from Apache ECharts',
+                        left: 'right'
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: function (params) {
+                            return `${params.name}: ${params.value}`;
+                        },
+                        showDelay: 0,
+                        transitionDuration: 0.2
+                    },
+                    toolbox: {
+                        show: true,
+                        left: 'left',
+                        top: 'top',
+                        feature: {
+                            dataView: { readOnly: false },
+                            restore: {},
+                            saveAsImage: {}
+                        }
+                    },
+                    series: [
+                        {
+                            name: 'USA 2024 Estimates',
+                            type: 'map',
+                            map: 'USA',
+                            projection: {
+                                project: function (point) {
+                                    return projection(point);
+                                },
+                                unproject: function (point) {
+                                    return projection.invert(point);
+                                }
+                            },
+                            label: {
+                                normal: {
+                                    show: true,
+                                    formatter: function (params) {
+                                        return stateAbbreviations[params.name] || params.name;
+                                    },
+                                    position: 'inside',
+                                    textStyle: {
+                                        color: '#000',
+                                        fontSize: 10
+                                    }
+                                }
+                            },
+                            emphasis: {
+                                label: {
+                                    show: true
+                                }
+                            },
+                            data: [
+                                { name: 'Alabama', value: 6, itemStyle: { areaColor: '#FF0000' } },
+                                { name: 'Alaska', value: 3, itemStyle: { areaColor: '#FF0000' } },
+                                { name: 'Arizona', value: 11, itemStyle: { areaColor: '#D3D3D3' } },
+                                { name: 'Arkansas', value: 6, itemStyle: { areaColor: '#FF0000' } },
+                                { name: 'California', value: 55, itemStyle: { areaColor: '#0000FF' } },
+                                { name: 'Colorado', value: 9, itemStyle: { areaColor: '#ADD8E6' } },
+                                { name: 'Connecticut', value: 7, itemStyle: { areaColor: '#0000FF' } },
+                                { name: 'Delaware', value: 3, itemStyle: { areaColor: '#0000FF' } },
+                                { name: 'District of Columbia', value: 3, itemStyle: { areaColor: '#0000FF' } },
+                                { name: 'Florida', value: 29, itemStyle: { areaColor: '#D3D3D3' } },
+                                { name: 'Georgia', value: 16, itemStyle: { areaColor: '#D3D3D3' } },
+                                { name: 'Hawaii', value: 4, itemStyle: { areaColor: '#0000FF' } },
+                                { name: 'Idaho', value: 4, itemStyle: { areaColor: '#FF0000' } },
+                                { name: 'Illinois', value: 20, itemStyle: { areaColor: '#0000FF' } },
+                                { name: 'Indiana', value: 11, itemStyle: { areaColor: '#FF0000' } },
+                                { name: 'Iowa', value: 6, itemStyle: { areaColor: '#FF0000' } },
+                                { name: 'Kansas', value: 6, itemStyle: { areaColor: '#FF0000' } },
+                                { name: 'Kentucky', value: 8, itemStyle: { areaColor: '#FF0000' } },
+                                { name: 'Louisiana', value: 8, itemStyle: { areaColor: '#FF0000' } },
+                                { name: 'Maine', value: 4, itemStyle: { areaColor: '#ADD8E6' } },
+                                { name: 'Maryland', value: 10, itemStyle: { areaColor: '#0000FF' } },
+                                { name: 'Massachusetts', value: 11, itemStyle: { areaColor: '#0000FF' } },
+                                { name: 'Michigan', value: 15, itemStyle: { areaColor: '#D3D3D3' } },
+                                { name: 'Minnesota', value: 10, itemStyle: { areaColor: '#ADD8E6' } },
+                                { name: 'Mississippi', value: 6, itemStyle: { areaColor: '#FF0000' } },
+                                { name: 'Missouri', value: 10, itemStyle: { areaColor: '#FF0000' } },
+                                { name: 'Montana', value: 3, itemStyle: { areaColor: '#FF0000' } },
+                                { name: 'Nebraska', value: 5, itemStyle: { areaColor: '#FF0000' } },
+                                { name: 'Nevada', value: 6, itemStyle: { areaColor: '#D3D3D3' } },
+                                { name: 'New Hampshire', value: 4, itemStyle: { areaColor: '#ADD8E6' } },
+                                { name: 'New Jersey', value: 14, itemStyle: { areaColor: '#0000FF' } },
+                                { name: 'New Mexico', value: 5, itemStyle: { areaColor: '#ADD8E6' } },
+                                { name: 'New York', value: 29, itemStyle: { areaColor: '#0000FF' } },
+                                { name: 'North Carolina', value: 16, itemStyle: { areaColor: '#D3D3D3' } },
+                                { name: 'North Dakota', value: 3, itemStyle: { areaColor: '#FF0000' } },
+                                { name: 'Ohio', value: 17, itemStyle: { areaColor: '#FF0000' } },
+                                { name: 'Oklahoma', value: 7, itemStyle: { areaColor: '#FF0000' } },
+                                { name: 'Oregon', value: 7, itemStyle: { areaColor: '#0000FF' } },
+                                { name: 'Pennsylvania', value: 20, itemStyle: { areaColor: '#D3D3D3' } },
+                                { name: 'Rhode Island', value: 4, itemStyle: { areaColor: '#0000FF' } },
+                                { name: 'South Carolina', value: 9, itemStyle: { areaColor: '#FF0000' } },
+                                { name: 'South Dakota', value: 3, itemStyle: { areaColor: '#FF0000' } },
+                                { name: 'Tennessee', value: 11, itemStyle: { areaColor: '#FF0000' } },
+                                { name: 'Texas', value: 40, itemStyle: { areaColor: '#FF0000' } },
+                                { name: 'Utah', value: 6, itemStyle: { areaColor: '#FF0000' } },
+                                { name: 'Vermont', value: 3, itemStyle: { areaColor: '#ADD8E6' } },
+                                { name: 'Virginia', value: 13, itemStyle: { areaColor: '#ADD8E6' } },
+                                { name: 'Washington', value: 12, itemStyle: { areaColor: '#0000FF' } },
+                                { name: 'West Virginia', value: 4, itemStyle: { areaColor: '#FF0000' } },
+                                { name: 'Wisconsin', value: 10, itemStyle: { areaColor: '#D3D3D3' } },
+                                { name: 'Wyoming', value: 3, itemStyle: { areaColor: '#FF0000' } }
+                            ]
+                        }
+                    ]
+                };
+                myChart.setOption(option);
+            });
+        });
+    </script>
+</body>
+</html>
