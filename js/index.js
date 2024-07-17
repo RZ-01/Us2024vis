@@ -171,7 +171,6 @@
 })();
 
 // 饼形图定制
-// 折线图定制
 (function() {
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.querySelector(".pie .chart"));
@@ -247,7 +246,7 @@
         myChart.resize();
     });
 })();
-// 学习进度柱状图模块
+// 柱状图2模块
 (function() {
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.querySelector(".bar1 .chart"));
@@ -358,7 +357,7 @@
         myChart.resize();
     });
 })();
-// 折线图 优秀作品
+// 折线图
 (function() {
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.querySelector(".line1 .chart"));
